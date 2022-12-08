@@ -18,7 +18,7 @@ String age= sc2.inputInt();
 System.out.println("The age is : " +age);
 }
 
-public static void main()
+public static void main(String args[])
 {
 Name();
 Age();
