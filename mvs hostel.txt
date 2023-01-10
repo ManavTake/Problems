@@ -1,0 +1,178 @@
+create database mvs_hostel;
+use mvs_hostel;
+
+create table residency_office
+(
+placeno varchar(5),
+hallno int,
+flatno int,
+primary key(placeno)
+);
+
+create table hall
+(
+hallno int,
+hname varchar(10),
+mid int,
+mname varchar(20),
+roomsnum int,
+primary key(hallno)
+);
+
+create table rooms
+(
+rplaceno varchar(5),
+hallno int,
+roomno int,
+rent int,
+primary key(rplaceno),
+foreign key(hallno)references hall(hallno)
+ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+create table apartment
+(
+flatno int,
+dormsnum int,
+primary key(flatno)
+);
+
+create table dormitory
+(
+dplaceno varchar(10),
+flatno int,
+dno int,
+dbedno int,
+rent int,
+primary key(dplaceno),
+foreign key(flatno) references apartment(flatno)
+ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+create table staff
+(
+staffid int,
+staffname varchar(20),
+primary key(staffid)
+);
+
+create table inspect
+(
+inspid int primary key,
+staffid int,
+inspdate varchar(10),
+roomcondt varchar(10),
+hallno int,
+flatno int,
+foreign key (staffid) references staff(staffid),
+foreign key (hallno) references hall(hallno),
+foreign key (flatno) references apartment (flatno)
+ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+create table student
+(
+sid int,
+sname varchar(20),
+dob varchar(10),
+gender varchar(6),
+nationality varchar(10),
+study varchar(20),
+placeno varchar(5),
+primary key(sid),
+foreign key (placeno) references residency_office (placeno)
+ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+create table invoice
+(
+invid int,
+sid int,
+placeno varchar(5),
+paydate varchar(10),
+primary key(invid),
+foreign key (sid) references student(sid),
+foreign key (placeno) references residency_office (placeno)
+ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+insert into apartment values
+(1, 10), (2, 15), (3,8), (4,10),(5, 6);
+select * from apartment;
+
+insert into dormitory values
+(101.1 , 1,100,1, 5000),(202.3, 1,202,3, 5000),(303.2, 2,303,2, 7000),(404.1, 3,404,1, 4000),(205.3, 3,205,3, 4000);
+select * from dormitory;
+
+insert into staff values(300,'mallikarjun');
+insert into staff values(301,'revanth');
+insert into staff values(302,'malli');
+insert into staff values(303,'zebu');
+insert into staff values(304,'leela');
+insert into staff values(305,'monu');
+select * from staff;
+
+
+insert into hall values (1,'Victoria',100,'ramesh',7);
+insert into hall values (2,'amster',101,'rakesh',10);
+insert into hall values (3,'nuty',102,'ramesh',5);
+insert into hall values (4,'elma',103,'ravish',15);
+insert into hall values (5,'arya',105,'rajesh',6);
+select * from hall;
+
+
+insert into rooms values(1.5, 1, 5,5500);
+insert into rooms values(5.3, 5, 3,5500);
+insert into rooms values(2.2, 2, 2,7000);
+insert into rooms values(3.5, 3, 5,10000);
+insert into rooms values(4.5, 4, 5,3700);
+select * from rooms;
+
+insert into residency_office values('h1r2',1,null);
+insert into residency_office values('h2r1',2,null);
+insert into residency_office values('f1r1',null,1);
+insert into residency_office values('f2r2',null,2);
+insert into residency_office values('h4r3',4,null);
+insert into residency_office values('h5r3',5,null);
+select * from residency_office;
+
+
+
+insert into student values(1,'Rajesh','2002Jan1','Boy','India','UG','f1r1');
+insert into student values(2,'Rakesh','2003Jan5','Boy','India','UG','h5r3');
+insert into student values(3,'Ramesh','2001Feb24','Boy','India','UG','h5r3');
+insert into student values(4,'Raveesh','2003Oct11','Boy','India','UG','h2r1');
+insert into student values(5,'Rashid','2002Aug31','Boy','India','UG','f2r2');
+insert into student values(6,'Raji','2002Sep21','Girl','India','UG','h4r3');
+select * from student;
+
+
+
+insert into invoice values(1234,1,'f1r1','2023-04-09');
+insert into invoice values(1235,2,'h5r3','2023-04-09');
+insert into invoice values(1236,3,'h5r3','2023-04-09');
+insert into invoice values(1237,4,'h2r1','2023-04-09');
+insert into invoice values(1238,5,'f2r2','2023-04-09');
+insert into invoice values(1239,6,'h4r3','2023-04-09');
+select * from invoice;
+
+insert into inspect values(1,300,'2023-04-09','good',1,null);
+insert into inspect values(2,301,'2023-04-09','good',2,null);
+insert into inspect values(3,302,'2023-04-09','bad',null,2);
+insert into inspect values(4,303,'2023-04-09','good',null,3);
+insert into inspect values(5,304,'2023-04-09','bad',4,null);
+insert into inspect values(6,305,'2023-04-09','average',null,1);
+select * from inspect;
+
+update invoice
+set sid=2
+where placeno = 'f1r1';
+
+select roomcondt
+from inspect 
+where staffid = 302;
+
+select hallno
+from hall
+where hallno not in( select hallno
+						from residency_office);
